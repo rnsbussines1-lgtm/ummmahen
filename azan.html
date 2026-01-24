@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prayer Times | Ummah Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #2c1e17;
+            --accent-gold: #b08d57;
+            --bg-page: #eaddca;
+            --white: #ffffff;
+            --text-muted: #6b5d54;
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-page); 
+            margin: 0; padding: 0; 
+            display: flex; flex-direction: column; min-height: 100vh;
+            color: var(--bg-dark);
+        }
+
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; flex-grow: 1; }
+
+        .back-btn {
+            background: var(--bg-dark);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: opacity 0.2s;
+        }
+        .back-btn:hover { opacity: 0.9; }
+
+        .prayer-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px 20px;
+            box-shadow: 10px 10px 0px rgba(176, 141, 87, 0.2);
+            text-align: center;
+        }
+
+        .location-title { font-size: 24px; font-weight: 700; margin-bottom: 5px; color: var(--bg-dark); }
+        .current-date { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .current-date::before, .current-date::after { content: ""; height: 1px; width: 40px; background: #dcdcdc; }
+
+        .prayer-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .prayer-item {
+            padding: 25px 10px;
+            border-right: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .prayer-item:last-child { border-right: none; }
+        
+        .prayer-icon { width: 32px; height: 32px; fill: var(--accent-gold); }
+        .prayer-name { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+        .prayer-time { font-size: 24px; font-weight: 700; color: var(--bg-dark); }
+
+        footer { background: var(--bg-dark); color: var(--white); text-align: center; padding: 30px 20px; font-size: 13px; margin-top: 40px; }
+        footer p { margin: 5px 0; opacity: 0.8; }
+
+        @media (max-width: 768px) {
+            .prayer-grid { grid-template-columns: 1fr; }
+            .prayer-item { border-right: none; border-bottom: 1px solid #eee; flex-direction: row; justify-content: space-between; padding: 20px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="back-btn">← Back to Home</a>
+
+    <div class="prayer-card">
+        <div class="location-title" id="city-name">Locating...</div>
+        <div class="current-date" id="date-display">Loading date...</div>
+
+        <div class="prayer-grid">
+            <div class="prayer-item">
+                <svg class="prayer-icon" viewBox="0 0 24 24"><path d="M6.76,4.84L5.34,3.42C2.01,5.21 1,8.94 1,12.7C1,16.46 2.01,20.19 5.34,21.98L6.76,20.56C4.21,19.12 3,16.03 3,12.7C3,9.37 4.21,6.28 6.76,4.84M12,1C5.92,1 1,5.92 1,12C1,18.08 5.92,23 12,23C18.08,23 23,18.08 23,12C23,5.92 18.08,1 12,1M12,19C8.13,19 5,15.87 5,12C5,8.13 8.13,5 12,5C15.87,5 19,8.13 19,12C19,15.87 15.87,19 12,19Z"/></svg>
+                <span class="prayer-name">Fajr</span>
+                <span class="prayer-time" id="fajr">--:--</span>
+            </div>
+            <div class="prayer-item">
+                <svg class="prayer-icon" viewBox="0 0 24 24"><path d="M12,7L11,10H13L12,7M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/></svg>
+                <span class="prayer-name">Dhuhr</span>
+                <span class="prayer-time" id="dhuhr">--:--</span>
+            </div>
+            <div class="prayer-item">
+                <svg class="prayer-icon" viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,10V12H14V10H12Z"/></svg>
+                <span class="prayer-name">Asr</span>
+                <span class="prayer-time" id="asr">--:--</span>
+            </div>
+            <div class="prayer-item">
+                <svg class="prayer-icon" viewBox="0 0 24 24"><path d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/></svg>
+                <span class="prayer-name">Maghrib</span>
+                <span class="prayer-time" id="maghrib">--:--</span>
+            </div>
+            <div class="prayer-item">
+                <svg class="prayer-icon" viewBox="0 0 24 24"><path d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.91C17.41,15.33 15.62,15 13.5,15C7.15,15 2,20.15 2,26.5H4C4,21.25 8.25,17 13.5,17C14.82,17 16.07,17.27 17.21,17.75L18.97,15.91Z"/></svg>
+                <span class="prayer-name">Isha</span>
+                <span class="prayer-time" id="isha">--:--</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 Ummah Online. All rights reserved.</p>
+    <p>Data provided by Aladhan API. Times are based on standard conventions.</p>
+</footer>
+
+<script>
+    const cityDisplay = document.getElementById('city-name');
+    const dateDisplay = document.getElementById('date-display');
+
+    function updateDate() {
+        const now = new Date();
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        dateDisplay.innerText = now.toLocaleDateString('en-US', options);
+    }
+
+    async function getPrayerTimes(lat, lon, locationName = "Your Location") {
+        try {
+            const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`;
+            const res = await fetch(url);
+            const data = await res.json();
+            
+            if (data.code === 200) {
+                const t = data.data.timings;
+                document.getElementById('fajr').innerText = t.Fajr;
+                document.getElementById('dhuhr').innerText = t.Dhuhr;
+                document.getElementById('asr').innerText = t.Asr;
+                document.getElementById('maghrib').innerText = t.Maghrib;
+                document.getElementById('isha').innerText = t.Isha;
+                cityDisplay.innerText = `Prayer Times in ${locationName}`;
+            }
+        } catch (error) {
+            cityDisplay.innerText = "Error loading prayer times";
+            console.error(error);
+        }
+    }
+
+    function init() {
+        updateDate();
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    getPrayerTimes(pos.coords.latitude, pos.coords.longitude);
+                },
+                () => {
+                    // Default to London if permission denied
+                    getPrayerTimes(51.5074, -0.1278, "London");
+                }
+            );
+        } else {
+            getPrayerTimes(51.5074, -0.1278, "London");
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>

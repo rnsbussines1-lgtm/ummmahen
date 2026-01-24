@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ummah Online | Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #2c1e17;
+            --accent-gold: #b08d57;
+            --gold-gradient: linear-gradient(135deg, #b08d57 0%, #8e6d3f 100%);
+            --white: #ffffff;
+            --bg-page: #eaddca;
+            --transition: 300ms ease-in-out;
+        }
+
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background-color: var(--bg-page); color: var(--bg-dark); line-height: 1.6; overflow-x: hidden; }
+
+        /* --- HEADER WITH LANG SWITCHER --- */
+        header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 20px 0;
+        }
+        .header-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 20px;
+        }
+        .lang-switcher {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            gap: 10px;
+        }
+        .lang-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .lang-link.active { opacity: 1; color: var(--accent-gold); }
+        .lang-link:hover { opacity: 1; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            height: 85vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('photo.png') no-repeat center center / cover;
+        }
+
+        .hero-content { position: relative; z-index: 2; max-width: 850px; padding: 0 20px; margin-top: 40px; }
+        
+        .main-logo-box {
+            background: #f4eadd;
+            width: 140px;
+            height: 140px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 3px solid var(--accent-gold);
+        }
+        .main-logo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .hero h1 { font-size: clamp(26px, 5vw, 42px); font-weight: 700; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .hero-btns { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        
+        .btn-main {
+            padding: 16px 35px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+            font-family: 'Montserrat';
+        }
+        .btn-gold { background: var(--gold-gradient); color: var(--white); }
+        .btn-outline { background: rgba(255,255,255,0.1); color: var(--white); border: 2px solid var(--white); }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); filter: brightness(1.1); }
+
+        /* --- CONTENT --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+
+        .daily-ayah-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 40px;
+            margin-top: -100px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 5px solid var(--accent-gold);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .ayah-ar { font-family: 'Amiri', serif; font-size: 2.4rem; margin-bottom: 15px; color: #1a1a1a; direction: rtl; }
+        .ayah-en { font-size: 1.1rem; font-style: italic; color: #555; }
+
+        .section-header { text-align: center; margin: 60px 0 40px; }
+        .section-header h2 { font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Navigation Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .nav-card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-card:hover { 
+            transform: translateY(-8px); 
+            border-color: var(--accent-gold); 
+            box-shadow: 0 20px 40px rgba(176,141,87,0.15); 
+        }
+
+        .nav-card svg { width: 50px; height: 50px; fill: var(--accent-gold); margin-bottom: 20px; }
+        .nav-card h3 { margin: 0 0 10px; font-size: 20px; font-weight: 700; }
+        .nav-card p { margin: 0; opacity: 0.7; font-size: 0.95rem; }
+
+        footer { background: var(--bg-dark); color: var(--white); text-align: center; padding: 40px 20px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="lang-switcher">
+                <a href="https://ummahonline.org" class="lang-link active">EN</a>
+                <span style="color: rgba(255,255,255,0.3)">|</span>
+                <a href="https://ru.ummahonline.org" class="lang-link">RU</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="main-logo-box">
+                <img src="logo.png" alt="Logo">
+            </div>
+            <h1>The Path to Knowledge and Faith</h1>
+            <div class="hero-btns">
+                <a href="quran.html" class="btn-main btn-gold">The Holy Quran</a>
+                <a href="prayer.html" class="btn-main btn-outline">Prayer Times</a>
+                <a href="news.html" class="btn-main btn-outline">News</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <div id="daily-ayah-container" class="daily-ayah-card">
+            <h3 style="color:var(--accent-gold); margin-top:0; text-transform: uppercase; font-size: 12px; letter-spacing: 2px;">Ayah of the Day</h3>
+            <div id="ayah-content">
+                <p class="ayah-ar">Loading...</p>
+                <p class="ayah-en">Please wait</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Our Services</h2>
+        </div>
+
+        <div class="features-grid">
+            <a href="quran.html" class="nav-card">
+                <svg viewBox="0 0 24 24"><path d="M19 2H5c-1.11 0-2 .9-2 2v16c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 14.5l-3.5-2 3.5-2 3.5 2-3.5 2zM19 8H5V6h14v2z"/></svg>
+                <h3>Quran</h3>
+                <p>Read and study Surahs with translation</p>
+            </a>
+
+            <a href="prayer.html" class="nav-card">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                <h3>Prayer</h3>
+                <p>Get accurate prayer times for your city</p>
+            </a>
+
+            <a href="news.html" class="nav-card">
+                <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 12H5V7h6v10zm9 0h-7v-2h7v2zm0-4h-7v-2h7v2zm0-4h-7V7h7v2z"/></svg>
+                <h3>News</h3>
+                <p>Latest updates from the Muslim Ummah</p>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Ummah Online. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function loadDailyAyah() {
+            const ayahs = [
+                { ar: "فَاذْكُرُونِي أَذْكُرْكُمْ", en: "\"Remember Me; I will remember you.\" (2:152)" },
+                { ar: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", en: "\"Indeed, Allah is with the patient.\" (2:153)" },
+                { ar: "وَقُل رَّبِّ زِدْنِي عِلْمًا", en: "\"And say, 'My Lord, increase me in knowledge.'\" (20:114)" }
+            ];
+            const random = ayahs[Math.floor(Math.random() * ayahs.length)];
+            document.getElementById('ayah-content').innerHTML = `
+                <p class="ayah-ar">${random.ar}</p>
+                <p class="ayah-en">${random.en}</p>
+            `;
+        }
+        window.onload = loadDailyAyah;
+    </script>
+</body>
+</html>

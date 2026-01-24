@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Reading | Ummah Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Amiri:wght@700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #2c1e17;
+            --accent-gold: #b08d57;
+            --accent-light: #d4af37;
+            --bg-page: #f4eee0; 
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(44, 30, 23, 0.08);
+            --transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-page); 
+            background-image: 
+                radial-gradient(circle at top right, rgba(176,141,87,0.05), transparent),
+                url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            background-attachment: fixed;
+            margin: 0; padding: 20px; 
+            color: var(--bg-dark);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* Back Button */
+        .back-btn {
+            background: linear-gradient(135deg, var(--bg-dark), #4a3429);
+            color: white;
+            border: 1px solid var(--accent-gold);
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            font-weight: 700;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+        .back-btn:hover { transform: translateX(-5px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+        /* Search */
+        .search-container {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        #surahSearch {
+            width: 100%;
+            padding: 18px 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(176,141,87,0.3);
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            font-family: 'Montserrat';
+            outline: none;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .quran-header { text-align: center; margin-bottom: 50px; }
+        .arabic-title { 
+            font-family: 'Amiri', serif; 
+            font-size: clamp(3rem, 8vw, 4.5rem); 
+            color: var(--accent-gold); 
+            display: block; 
+            margin-bottom: 10px;
+        }
+        h1 { margin: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+
+        /* Surah Grid */
+        .surah-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 25px; 
+        }
+
+        .surah-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .surah-card:hover { 
+            transform: translateY(-10px); 
+            background: var(--white);
+            box-shadow: 0 20px 40px rgba(176,141,87,0.15);
+            border-color: var(--accent-gold);
+        }
+
+        .surah-num {
+            position: absolute;
+            top: -15px; left: 20px;
+            background: var(--bg-dark);
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; font-size: 0.9rem; font-weight: 700; color: var(--accent-gold);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .ar-name { font-family: 'Scheherazade New', serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; color: #1a1a1a; }
+        .en-name { font-weight: 700; font-size: 1.2rem; margin-bottom: 5px; text-align: center; color: var(--bg-dark); }
+        .en-desc { font-size: 0.9rem; opacity: 0.6; font-style: italic; }
+
+        /* Reading View */
+        #reading-view { display: none; }
+        
+        .bismillah {
+            font-family: 'Amiri', serif;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            text-align: center;
+            margin: 40px 0;
+            color: var(--bg-dark);
+        }
+
+        .ayah-box { 
+            background: var(--white); 
+            padding: 40px; 
+            border-radius: 20px; 
+            margin-bottom: 30px; 
+            border-left: 5px solid var(--accent-gold); 
+            box-shadow: var(--shadow);
+        }
+
+        .ayah-num { 
+            color: var(--accent-gold); 
+            font-weight: 700; 
+            display: inline-block; 
+            margin-bottom: 20px; 
+            padding: 5px 15px;
+            background: #fdf8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .ayah-text-ar { 
+            font-family: 'Scheherazade New', serif; 
+            font-size: 2.8rem; 
+            text-align: right; 
+            display: block; 
+            line-height: 2.4;
+            margin-bottom: 25px;
+            direction: rtl;
+        }
+        .ayah-text-en { font-size: 1.2rem; color: #333; line-height: 1.8; text-align: left; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer { text-align: center; padding: 60px 0; opacity: 0.5; font-size: 0.9rem; }
+
+        @media (max-width: 600px) {
+            .ayah-text-ar { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button class="back-btn" id="btn-back" onclick="handleBack()">← Back</button>
+
+    <div id="list-view">
+        <div class="quran-header">
+            <span class="arabic-title">القرآن الكريم</span>
+            <h1>The Holy Quran</h1>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="surahSearch" placeholder="Search Surah...">
+        </div>
+
+        <div class="surah-grid" id="surah-container"></div>
+    </div>
+
+    <div id="reading-view">
+        <div class="quran-header">
+            <span id="current-ar" class="arabic-title"></span>
+            <h1 id="current-en"></h1>
+            <p id="current-info"></p>
+        </div>
+        <div id="ayahs-container"></div>
+    </div>
+
+    <footer>
+        &copy; 2026 Ummah Online.
+    </footer>
+</div>
+
+<script>
+    // English names and descriptions
+    const namesEn = ["Al-Fatihah — The Opening — 🕋", "Al-Baqarah — The Cow — 🕌", "Ali 'Imran — Family of Imran — 🕌", "An-Nisa — The Women — 🕌", "Al-Ma'idah — The Table Spread — 🕌", "Al-An'am — The Cattle — 🕋", "Al-A'raf — The Heights — 🕋", "Al-Anfal — The Spoils of War — 🕌", "At-Tawbah — The Repentance — 🕌", "Yunus — Jonah — 🕋", "Hud — Hud — 🕋", "Yusuf — Joseph — 🕋", "Ar-Ra'd — The Thunder — 🕋 ⭐", "Ibrahim — Abraham — 🕋", "Al-Hijr — The Rocky Tract — 🕋", "An-Nahl — The Bee — 🕋", "Al-Isra — The Night Journey — 🕋", "Al-Kahf — The Cave — 🕋", "Maryam — Mary — 🕋", "Ta-Ha — Ta-Ha — 🕋", "Al-Anbya — The Prophets — 🕋", "Al-Hajj — The Pilgrimage — 🕌", "Al-Mu'minun — The Believers — 🕋", "An-Nur — The Light — 🕌", "Al-Furqan — The Criterion — 🕋", "Ash-Shu'ara — The Poets — 🕋", "An-Naml — The Ant — 🕋", "Al-Qasas — The Stories — 🕋", "Al-'Ankabut — The Spider — 🕋", "Ar-Rum — The Romans — 🕋", "Luqman — Luqman — 🕋", "As-Sajdah — The Prostration — 🕋", "Al-Ahzab — The Combined Forces — 🕌", "Saba — Sheba — 🕋", "Fatir — Originator — 🕋", "Ya-Sin — Ya-Sin — 🕋", "As-Saffat — Those who set the Ranks — 🕋", "Sad — The Letter Sad — 🕋", "Az-Zumar — The Troops — 🕋", "Ghafir — The Forgiver — 🕋", "Fussilat — Explained in Detail — 🕋", "Ash-Shura — The Consultation — 🕋", "Az-Zukhruf — The Ornaments of Gold — 🕋", "Ad-Dukhan — The Smoke — 🕋", "Al-Jathiyah — The Crouching — 🕋", "Al-Ahqaf — The Wind-Curved Sandhills — 🕋", "Muhammad — Muhammad — 🕌", "Al-Fath — The Victory — 🕌", "Al-Hujurat — The Dwellings — 🕌", "Qaf — The Letter Qaf — 🕋", "Adh-Dhariyat — The Winnowing Winds — 🕋", "At-Tur — The Mount — 🕋", "An-Najm — The Star — 🕋", "Al-Qamar — The Moon — 🕋", "Ar-Rahman — The Beneficent — 🕋", "Al-Waqi'ah — The Inevitable — 🕋", "Al-Hadid — The Iron — 🕌", "Al-Mujadila — The Pleading Woman — 🕌", "Al-Hashr — The Exile — 🕌", "Al-Mumtahanah — She that is to be examined — 🕌", "As-Saff — The Ranks — 🕌", "Al-Jumu'ah — The Congregation, Friday — 🕌", "Al-Munafiqun — The Hypocrites — 🕌", "At-Taghabun — The Mutual Disillusion — 🕌", "At-Talaq — The Divorce — 🕌", "At-Tahrim — The Prohibition — 🕌", "Al-Mulk — The Sovereignty — 🕋", "Al-Qalam — The Pen — 🕋", "Al-Haqqah — The Reality — 🕋", "Al-Ma'arij — The Ascending Stairways — 🕋", "Nuh — Noah — 🕋", "Al-Jinn — The Jinn — 🕋", "Al-Muzzammil — The Enshrouded One — 🕋", "Al-Muddathir — The Cloaked One — 🕋", "Al-Qiyamah — The Resurrection — 🕋", "Al-Insan — The Man — 🕋 ⭐", "Al-Mursalat — The Emissaries — 🕋", "An-Naba — The Tidings — 🕋", "An-Nazi'at — Those who drag forth — 🕋", "Abasa — He Frowned — 🕋", "At-Takwir — The Overthrowing — 🕋", "Al-Infitar — The Cleaving — 🕋", "Al-Mutaffifin — The Defrauding — 🕋 ⭐", "Al-Inshiqaq — The Sundering — 🕋", "Al-Buruj — The Mansions of the Stars — 🕋", "At-Tariq — The Night-Comer — 🕋", "Al-A'la — The Most High — 🕋", "Al-Ghashiyah — The Overwhelming — 🕋", "Al-Fajr — The Dawn — 🕋", "Al-Balad — The City — 🕋", "Ash-Shams — The Sun — 🕋", "Al-Layl — The Night — 🕋", "Ad-Duha — The Morning Hours — 🕋", "Ash-Sharh — The Relief — 🕋", "At-Tin — The Fig — 🕋", "Al-'Alaq — The Clot — 🕋", "Al-Qadr — The Power — 🕋", "Al-Bayyinah — The Clear Proof — 🕌", "Az-Zalzalah — The Earthquake — 🕌", "Al-'Adiyat — The Courser — 🕋", "Al-Qari'ah — The Calamity — 🕋", "At-Takathur — The Rivalry in world increase — 🕋", "Al-'Asr — The Declining Day — 🕋", "Al-Humazah — The Traducer — 🕋", "Al-Fil — The Elephant — 🕋", "Quraysh — Quraysh — 🕋", "Al-Ma'un — The Small Kindnesses — 🕋 ⭐", "Al-Kawthar — The Abundance — 🕋", "Al-Kafirun — The Disbelievers — 🕋", "An-Nasr — The Divine Support — 🕌", "Al-Masad — The Palm Fiber — 🕋", "Al-Ikhlas — The Sincerity — 🕋", "Al-Falaq — The Daybreak — 🕋", "An-Nas — Mankind — 🕋"];
+
+    let qData = [];
+    let isReading = false;
+
+    async function loadQuran() {
+        try {
+            // Assuming the file is quran_en.json
+            const res = await fetch('quran_en.json');
+            const data = await res.json();
+            // Adapting to various JSON structures
+            qData = data.suras || data.chapters || data;
+            renderList();
+        } catch (e) {
+            console.error("Could not load Quran data:", e);
+        }
+    }
+
+    function renderList() {
+        const container = document.getElementById('surah-container');
+        container.innerHTML = '';
+        qData.forEach((surah, i) => {
+            const parts = namesEn[i].split(' — ');
+            const card = document.createElement('div');
+            card.className = 'surah-card';
+            card.style.animationDelay = `${i * 0.01}s`;
+            card.onclick = () => openSurah(i);
+            card.innerHTML = `
+                <div class="surah-num">${i + 1}</div>
+                <span class="ar-name">${surah.name || surah.name_arabic}</span>
+                <div class="en-name">${parts[0]} ${parts[2] || ''}</div>
+                <div class="en-desc">${parts[1]}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    document.getElementById('surahSearch').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('.surah-card').forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(term) ? 'flex' : 'none';
+        });
+    });
+
+    function openSurah(index) {
+        isReading = true;
+        document.getElementById('list-view').style.display = 'none';
+        document.getElementById('reading-view').style.display = 'block';
+        const surah = qData[index];
+        const parts = namesEn[index].split(' — ');
+        
+        document.getElementById('current-ar').innerText = surah.name || surah.name_arabic;
+        document.getElementById('current-en').innerText = parts[0];
+        
+        const verseCount = surah.aya ? surah.aya.length : (surah.verses ? surah.verses.length : 0);
+        document.getElementById('current-info').innerText = `${parts[1]} — ${verseCount} Verses`;
+        
+        const container = document.getElementById('ayahs-container');
+        container.innerHTML = '';
+        
+        // Don't show Bismillah for Surah At-Tawbah (index 8) or if it's Fatiha (index 0) since it's often verse 1
+        if (index !== 8 && index !== 0) {
+            container.innerHTML += `<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
+        }
+
+        const ayahs = surah.aya || surah.verses;
+        ayahs.forEach((ayah, i) => {
+            container.innerHTML += `
+                <div class="ayah-box">
+                    <span class="ayah-num">Verse ${i + 1}</span>
+                    <span class="ayah-text-ar">${ayah.text || ayah.ar}</span>
+                    <p class="ayah-text-en">${ayah.translation || ayah.en || ayah.text_english}</p>
+                </div>`;
+        });
+        window.scrollTo(0,0);
+    }
+
+    function handleBack() {
+        if (isReading) {
+            isReading = false;
+            document.getElementById('list-view').style.display = 'block';
+            document.getElementById('reading-view').style.display = 'none';
+            window.scrollTo(0,0);
+        } else {
+            window.location.href = 'index.html';
+        }
+    }
+
+    loadQuran();
+</script>
+</body>
+</html>
