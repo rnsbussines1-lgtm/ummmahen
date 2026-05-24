@@ -466,105 +466,6 @@
             margin: 0 0 22px 0;
         }
 
-        .tafsir-toggle-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: transparent;
-            border: 1.5px solid var(--accent-gold);
-            color: var(--accent-gold);
-            padding: 9px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: var(--transition);
-            letter-spacing: 0.3px;
-        }
-
-        .tafsir-toggle-btn:hover {
-            background: rgba(194,163,120,0.1);
-        }
-
-        .tafsir-toggle-btn.open {
-            background: var(--accent-gold);
-            color: white;
-        }
-
-        .tafsir-toggle-btn .arrow {
-            transition: transform 0.3s ease;
-            font-size: 0.7rem;
-            display: inline-block;
-        }
-
-        .tafsir-toggle-btn.open .arrow {
-            transform: rotate(180deg);
-        }
-
-        .tafsir-block {
-            display: none;
-            margin-top: 22px;
-            padding: 28px 30px;
-            background: linear-gradient(135deg, #fdf8f0, #faf3e8);
-            border-radius: 14px;
-            border-left: 4px solid var(--accent-gold);
-        }
-
-        .tafsir-block.visible {
-            display: block;
-            animation: tafsirReveal 0.35s ease forwards;
-        }
-
-        .tafsir-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 1.8px;
-            text-transform: uppercase;
-            color: var(--accent-gold);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tafsir-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(194,163,120,0.35);
-        }
-
-        .tafsir-content {
-            font-size: 1rem;
-            line-height: 2;
-            color: #3a3028;
-        }
-
-        .tafsir-content p { margin: 0 0 14px 0; }
-        .tafsir-content p:last-child { margin-bottom: 0; }
-
-        .tafsir-content span[class*="arabic"],
-        .tafsir-content .arabic {
-            font-family: 'Scheherazade New', serif;
-            font-size: 1.4rem;
-            direction: rtl;
-            unicode-bidi: embed;
-            color: var(--bg-dark);
-        }
-
-        .tafsir-no-data {
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin: 0;
-        }
-
-        @keyframes tafsirReveal {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -642,9 +543,9 @@
     const AUDIO_EDITION = 'ar.mahermuaiqly';
     const AUDIO_BITRATE = 128;
     const AUDIO_RECITER_NAME = 'Maher Al-Muaiqly';
+    const QURAN_DATA_FILE = 'quran_ru.json';
 
     let qData = [];
-    let tafsirData = {};
     let surahAyahOffsets = [];
     let isReading = false;
     let currentAudio = null;
@@ -658,23 +559,19 @@
 
     async function loadAll() {
         try {
-            const [qRes, tRes] = await Promise.all([
-                fetch('quran_ru.json'),
-                fetch('tafsir_ru.json')
-            ]);
+            const qRes = await fetch(QURAN_DATA_FILE);
 
-            if (!qRes.ok || !tRes.ok) {
-                throw new Error('Files quran_ru.json or tafsir_ru.json not found next to the page.');
+            if (!qRes.ok) {
+                throw new Error(`File ${QURAN_DATA_FILE} not found next to the page.`);
             }
 
             qData = await qRes.json();
             qData = qData.suras || qData;
             buildSurahAyahOffsets();
-            tafsirData = await tRes.json();
             setLoadNotice('');
         } catch (e) {
             console.error('Load error:', e);
-            setLoadNotice('Could not load quran_ru.json and tafsir_ru.json. Place both files next to quran.html.');
+            setLoadNotice(`Could not load ${QURAN_DATA_FILE}. Place it next to quran.html.`);
         }
 
         renderList();
@@ -693,13 +590,6 @@
             total += (surah.aya || surah.verses || []).length;
             return currentOffset;
         });
-    }
-
-    function getTafsir(surahNum, ayahNum) {
-        const key = `${surahNum}:${ayahNum}`;
-        const entry = tafsirData[key];
-        if (!entry) return null;
-        return (typeof entry === 'object' && entry.text !== undefined) ? entry.text : String(entry);
     }
 
     function renderList() {
@@ -989,14 +879,6 @@
     const playIcon = () => `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
     const pauseIcon = () => `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
 
-    function toggleTafsir(btn, blockId) {
-        const block = document.getElementById(blockId);
-        const isOpen = block.classList.contains('visible');
-        block.classList.toggle('visible', !isOpen);
-        btn.classList.toggle('open', !isOpen);
-        btn.querySelector('.label-text').textContent = isOpen ? 'Read tafsir' : 'Hide tafsir';
-    }
-
     function openSurah(index) {
         stopPlayback();
         isReading = true;
@@ -1020,16 +902,8 @@
             container.innerHTML += `<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
         }
 
-        const surahNum = index + 1;
-
         ayahs.forEach((ayah, i) => {
             const ayahNum = i + 1;
-            const blockId = `tf-${surahNum}-${ayahNum}`;
-            const tafsirHtml = getTafsir(surahNum, ayahNum);
-            const tafsirInner = tafsirHtml
-                ? `<div class="tafsir-content">${tafsirHtml}</div>`
-                : `<p class="tafsir-no-data">Tafsir for this verse was not found.</p>`;
-
             const div = document.createElement('div');
             div.className = 'ayah-box';
             div.dataset.surahIndex = index;
@@ -1043,14 +917,6 @@
                 </div>
                 <span class="ayah-text-ar">${ayah.text}</span>
                 <p class="ayah-text-ru">${ayah.translation || ayah.text_russian || ''}</p>
-                <button class="tafsir-toggle-btn" onclick="toggleTafsir(this, '${blockId}')">
-                    <span class="label-text">Read tafsir</span>
-                    <span class="arrow">▼</span>
-                </button>
-                <div id="${blockId}" class="tafsir-block">
-                    <div class="tafsir-label">Tafsir Ibn Kathir</div>
-                    ${tafsirInner}
-                </div>
             `;
             container.appendChild(div);
         });
@@ -1119,3 +985,4 @@
 </script>
 </body>
 </html>
+
