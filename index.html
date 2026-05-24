@@ -1,248 +1,745 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ummah Online | Home</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
-<style>
-:root {
-    --bg-dark: #2c1e17;
-    --accent-gold: #b08d57;
-    --gold-gradient: linear-gradient(135deg, #b08d57 0%, #8e6d3f 100%);
-    --white: #ffffff;
-    --bg-page: #eaddca;
-    --transition: 300ms ease-in-out;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ummah Online | Home</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #3d3129;
+            --bg-darker: #2c2218;
+            --gold: #c2a378;
+            --gold-light: #e6d5bc;
+            --gold-soft: rgba(194,163,120,0.15);
+            --white: #ffffff;
+            --cream: #fdfaf5;
+            --cream-warm: #f7f0e6;
+            --text: #4a3f35;
+            --muted: #8c8279;
+            --border: rgba(194,163,120,0.15);
+            --radius-xl: 32px;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --shadow-soft: 0 8px 40px rgba(61,49,41,0.07);
+            --shadow-card: 0 4px 24px rgba(61,49,41,0.05);
+        }
 
-* { box-sizing: border-box; scroll-behavior: smooth; }
-body { font-family: 'Montserrat', sans-serif; margin: 0; background-color: var(--bg-page); color: var(--bg-dark); line-height: 1.6; overflow-x: hidden; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background: var(--cream);
+            color: var(--text);
+            overflow-x: hidden;
+            cursor: none;
+        }
 
-/* HEADER */
-header {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-    padding: 20px 0;
-}
-.header-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: flex-end;
-    padding: 0 20px;
-}
-.lang-switcher {
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(5px);
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.2);
-    display: flex;
-    gap: 10px;
-}
-.lang-link {
-    color: var(--white);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    opacity: 0.7;
-    transition: var(--transition);
-}
-.lang-link.active { opacity: 1; color: var(--accent-gold); }
-.lang-link:hover { opacity: 1; }
+        #cur { position:fixed;width:9px;height:9px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transition:transform .12s ease; }
+        #cur-ring { position:fixed;width:36px;height:36px;border:1.5px solid rgba(194,163,120,.45);border-radius:50%;pointer-events:none;z-index:99998;transition:transform .28s cubic-bezier(.23,1,.32,1),border-color .2s; }
+        a:hover ~ #cur, button:hover ~ #cur { transform:scale(2.5); }
+        @media(max-width:768px){ #cur,#cur-ring{display:none;} body{cursor:auto;} }
 
-/* HERO */
-.hero {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: var(--white);
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('photo.png') no-repeat center center / cover;
-    min-height: 85vh;
-    padding: 80px 0;
-}
-.hero-content { position: relative; z-index: 2; max-width: 850px; padding: 0 20px; margin-top: 40px; }
-.main-logo-box {
-    background: #f4eadd;
-    width: 140px;
-    height: 140px;
-    border-radius: 15px;
-    display: inline-block;
-    margin-bottom: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    overflow: hidden;
-    border: 3px solid var(--accent-gold);
-}
-.main-logo-box img { width: 100%; height: 100%; object-fit: cover; }
-.hero h1 { font-size: clamp(26px, 5vw, 42px); font-weight: 700; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
-.hero-btns { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-.btn-main {
-    padding: 16px 35px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-    display: inline-block;
-    border: none;
-    font-family: 'Montserrat';
-}
-.btn-gold { background: var(--gold-gradient); color: var(--white); }
-.btn-outline { background: rgba(255,255,255,0.1); color: var(--white); border: 2px solid var(--white); }
-.btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); filter: brightness(1.1); }
+        #loader {
+            position:fixed;inset:0;background:var(--cream);z-index:10000;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+            transition:opacity .8s ease,transform .8s ease;
+        }
+        #loader.hide{opacity:0;transform:scale(1.03);pointer-events:none;}
+        .ld-ar{font-family:'Amiri',serif;font-size:clamp(2rem,5vw,3rem);color:var(--gold);opacity:0;animation:fadeUp .9s ease .3s forwards;}
+        .ld-line{width:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:growLine 1.3s ease .5s forwards;}
+        .ld-sub{font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;color:var(--muted);text-transform:uppercase;opacity:0;animation:fadeUp .9s ease .8s forwards;}
 
-/* CONTENT */
-.container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
-.daily-ayah-card {
-    background: var(--white);
-    border-radius: 15px;
-    padding: 40px;
-    margin-top: -100px;
-    position: relative;
-    z-index: 10;
-    border-bottom: 5px solid var(--accent-gold);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    text-align: center;
-}
-.ayah-ar { font-family: 'Amiri', serif; font-size: 2.4rem; margin-bottom: 15px; color: #1a1a1a; direction: rtl; }
-.ayah-en { font-size: 1.1rem; font-style: italic; color: #555; }
+        .top-bar {
+            background: var(--bg-dark);
+            color: var(--gold-light);
+            padding: 10px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .top-bar-dot {
+            display: inline-block;
+            width: 5px; height: 5px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+            animation: blink 2.5s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-.section-header { text-align: center; margin: 60px 0 40px; }
-.section-header h2 { font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
 
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    margin-bottom: 60px;
-}
-.nav-card {
-    background: var(--white);
-    padding: 40px 30px;
-    border-radius: 15px;
-    text-align: center;
-    text-decoration: none;
-    color: inherit;
-    transition: var(--transition);
-    border: 1px solid rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.nav-card:hover { 
-    transform: translateY(-8px); 
-    border-color: var(--accent-gold); 
-    box-shadow: 0 20px 40px rgba(176,141,87,0.15); 
-}
-.nav-card svg { width: 50px; height: 50px; fill: var(--accent-gold); margin-bottom: 20px; }
-.nav-card h3 { margin: 0 0 10px; font-size: 20px; font-weight: 700; }
-.nav-card p { margin: 0; opacity: 0.7; font-size: 0.95rem; }
+        .lang-switcher {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(194,163,120,.2);
+            border-radius: 20px;
+            padding: 2px 3px;
+        }
+        .lang-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .3s ease;
+            line-height: 1;
+        }
+        .lang-btn.active {
+            background: var(--gold);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+        .lang-btn.inactive {
+            background: transparent;
+            color: rgba(194,163,120,.55);
+        }
+        .lang-btn.inactive:hover {
+            color: var(--gold-light);
+            background: rgba(194,163,120,.1);
+        }
 
-footer { background: var(--bg-dark); color: var(--white); text-align: center; padding: 40px 20px; font-size: 14px; }
+        .main-header {
+            position: sticky; top: 0; z-index: 900;
+            background: rgba(253,250,245,.95);
+            backdrop-filter: blur(20px);
+            padding: 14px 28px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 24px rgba(61,49,41,.04);
+            transition: all .4s ease;
+        }
+        .logo-link { display:flex;align-items:center;gap:12px;text-decoration:none; }
+        .logo-img-sm {
+            width: 40px; height: 40px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            border: 1px solid rgba(194,163,120,.4);
+        }
+        .logo-name {
+            font-family: 'Cinzel', serif;
+            font-size: 12px; letter-spacing: 3.5px;
+            color: var(--bg-dark); text-transform: uppercase; font-weight: 600;
+        }
+        nav { display:flex;gap:28px;align-items:center; }
+        .nav-link {
+            font-family: 'Cinzel', serif;
+            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+            text-decoration: none; color: var(--muted);
+            position: relative; transition: color .35s ease; padding: 4px 0;
+        }
+        .nav-link::after {
+            content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;
+            background:var(--gold);transition:width .4s cubic-bezier(.23,1,.32,1);
+        }
+        .nav-link:hover{color:var(--gold);}
+        .nav-link:hover::after{width:100%;}
 
-/* --- MOBILE --- */
-@media (max-width: 600px) {
-    .hero {
-        min-height: auto;
-        padding: 100px 20px 60px;
-    }
-    .hero-btns { flex-direction: column; width: 100%; }
-    .btn-main { width: 100%; max-width: 280px; }
-    .main-logo-box { width: 100px; height: 100px; margin-bottom: 15px; }
-    .daily-ayah-card { margin-top: -20px; padding: 25px 15px; border-radius: 12px; }
-    .section-header h2 { font-size: 18px; letter-spacing: 1px; }
-    .nav-card { padding: 30px 20px; }
-    .nav-card h3 { font-size: 18px; }
-    .header-container { padding: 0 10px; justify-content: center; }
-}
-</style>
+        .hero {
+            position: relative; min-height: 100svh;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; overflow: hidden;
+            background: url('photo.png') center/cover no-repeat;
+        }
+        .hero-overlay {
+            position:absolute;inset:0;
+            background: linear-gradient(to bottom, rgba(30,22,16,.25) 0%, rgba(30,22,16,.65) 100%);
+        }
+        .hero-pattern {
+            position:absolute;inset:0;opacity:.025;
+            background-image:
+                repeating-linear-gradient(45deg,rgba(255,255,255,.8) 0,rgba(255,255,255,.8) 1px,transparent 1px,transparent 60px),
+                repeating-linear-gradient(-45deg,rgba(255,255,255,.8) 0,rgba(255,255,255,.8) 1px,transparent 1px,transparent 60px);
+        }
+        .hero-ring {
+            position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.05);
+            animation:spinSlow linear infinite;
+        }
+        .hero-ring-1{width:500px;height:500px;top:50%;left:50%;margin:-250px 0 0 -250px;animation-duration:60s;}
+        .hero-ring-2{width:750px;height:750px;top:50%;left:50%;margin:-375px 0 0 -375px;animation-duration:90s;animation-direction:reverse;}
+        @keyframes spinSlow{to{transform:rotate(360deg)}}
+
+        .particles{position:absolute;inset:0;pointer-events:none;}
+        .particle{position:absolute;border-radius:50%;background:rgba(194,163,120,.75);opacity:0;animation:riseUp linear infinite;}
+        @keyframes riseUp{0%{opacity:0;transform:translateY(0) scale(0)}10%{opacity:.8}90%{opacity:.15}100%{opacity:0;transform:translateY(-110vh) scale(1.5)}}
+
+        .hero-content {
+            position:relative;z-index:2;
+            max-width:740px;padding:40px 24px;
+        }
+
+        .hero-logo-box {
+            width: 96px; height: 96px;
+            background: rgba(255,255,255,.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(194,163,120,.45);
+            border-radius: 28px;
+            padding: 8px;
+            margin: 0 auto 36px;
+            box-shadow: 0 16px 48px rgba(0,0,0,.22);
+            opacity:0;transform:translateY(14px);
+            animation:fadeUp 1s ease 1s forwards;
+        }
+        .hero-logo-box img { width:100%;height:100%;object-fit:cover;border-radius:20px;display:block; }
+
+        .hero-eyebrow {
+            font-family:'Cinzel',serif;font-size:10px;letter-spacing:6px;
+            text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:28px;
+            display:flex;align-items:center;justify-content:center;gap:16px;
+            opacity:0;transform:translateY(16px);animation:fadeUp 1s ease 1.2s forwards;
+        }
+        .hero-eyebrow::before,.hero-eyebrow::after{
+            content:'';display:block;width:40px;height:1px;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,.3));
+        }
+        .hero-eyebrow::after{transform:scaleX(-1);}
+
+        .hero-title {
+            font-family:'Cinzel',serif;
+            font-size:clamp(2.2rem,6vw,4.8rem);font-weight:700;
+            line-height:1.1;color:#fff;letter-spacing:-.5px;
+            text-shadow:0 2px 20px rgba(0,0,0,.25);margin-bottom:20px;
+            opacity:0;transform:translateY(26px);animation:fadeUp 1.2s ease 1.4s forwards;
+        }
+        .hero-sub {
+            font-size:clamp(1rem,2vw,1.2rem);font-style:italic;font-weight:300;
+            color:rgba(255,255,255,.62);line-height:1.75;max-width:460px;
+            margin:0 auto 46px;
+            opacity:0;transform:translateY(22px);animation:fadeUp 1.2s ease 1.6s forwards;
+        }
+        .hero-cta {
+            display:inline-flex;align-items:center;gap:12px;
+            padding:16px 40px;border-radius:50px;
+            border:1px solid rgba(255,255,255,.38);color:#fff;
+            font-family:'Cinzel',serif;font-size:10px;
+            letter-spacing:4px;text-transform:uppercase;text-decoration:none;
+            position:relative;overflow:hidden;transition:border-color .4s ease;
+            opacity:0;transform:translateY(20px);animation:fadeUp 1.2s ease 1.8s forwards;
+        }
+        .hero-cta::before{
+            content:'';position:absolute;inset:0;border-radius:50px;
+            background:var(--gold);transform:translateX(-101%);
+            transition:transform .5s cubic-bezier(.23,1,.32,1);
+        }
+        .hero-cta:hover::before{transform:translateX(0);}
+        .hero-cta:hover{border-color:var(--gold);}
+        .hero-cta span,.hero-cta svg{position:relative;z-index:1;}
+        .hero-cta svg{width:14px;height:14px;fill:currentColor;transition:transform .3s ease;}
+        .hero-cta:hover svg{transform:translateX(4px);}
+
+        .scroll-hint {
+            position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:2;
+            display:flex;flex-direction:column;align-items:center;gap:8px;
+            opacity:0;animation:fadeUp 1s ease 2.2s forwards;
+        }
+        .scroll-hint-txt{font-family:'Cinzel',serif;font-size:8px;letter-spacing:4px;color:rgba(255,255,255,.28);text-transform:uppercase;}
+        .scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,rgba(255,255,255,.25),transparent);animation:scrollBounce 2s ease-in-out infinite;}
+        @keyframes scrollBounce{50%{opacity:.3;transform:scaleY(.55)}}
+
+        .prayer-wrap {
+            display:flex;justify-content:center;
+            background:var(--cream);
+            padding: 0 20px;
+        }
+        .prayer-bar {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            display: flex; justify-content: space-around;
+            padding: 28px 20px;
+            max-width: 960px; width: 100%;
+            margin-top: -52px; position: relative; z-index: 10;
+            box-shadow: 0 20px 60px rgba(61,49,41,.09), 0 4px 16px rgba(61,49,41,.04);
+            border: 1px solid rgba(194,163,120,.1);
+        }
+        .prayer-cell {
+            flex:1;min-width:90px;text-align:center;padding:10px 6px;
+            border-radius: var(--radius-md); position:relative; transition:background .3s ease;
+        }
+        .prayer-cell + .prayer-cell::before {
+            content:'';position:absolute;left:0;top:15%;height:70%;width:1px;
+            background:rgba(194,163,120,.12);
+        }
+        .prayer-cell.active{background:#fdf8f0;}
+        .prayer-cell.active::after{
+            content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;border-radius:2px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+        }
+        .p-name{display:block;font-family:'Cinzel',serif;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+        .p-time{display:block;font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:600;color:var(--bg-dark);letter-spacing:.5px;transition:color .3s;}
+        .prayer-cell.active .p-time{color:var(--gold);}
+        .prayer-cell.active .p-name{color:var(--gold);}
+
+        .marquee{overflow:hidden;padding:40px 0;background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+        .marquee-track{display:flex;white-space:nowrap;will-change:transform;}
+        .marquee-item{flex-shrink:0;padding:0 52px;font-family:'Amiri',serif;font-size:1.35rem;color:rgba(194,163,120,.32);display:flex;align-items:center;gap:52px;}
+        .m-dot{display:inline-block;width:4px;height:4px;background:rgba(194,163,120,.28);border-radius:50%;flex-shrink:0;}
+        @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+        .section-wrap{max-width:1100px;margin:0 auto;padding:80px 20px;}
+
+        .ayah-card {
+            background: var(--bg-dark);
+            border-radius: var(--radius-xl);
+            padding: 70px 48px;
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(30,18,10,.18);
+        }
+        .ayah-card::before {
+            content:'';position:absolute;inset:0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(194,163,120,.08) 0%, transparent 65%),
+                        radial-gradient(ellipse at 50% 100%, rgba(194,163,120,.05) 0%, transparent 60%);
+        }
+        .ayah-card-top {
+            position:absolute;top:0;left:50%;transform:translateX(-50%);
+            width:140px;height:2px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+        }
+        .ayah-label {
+            font-family:'Cinzel',serif;font-size:9px;letter-spacing:5px;
+            text-transform:uppercase;color:rgba(194,163,120,.6);
+            margin-bottom:40px;position:relative;z-index:1;
+            display:flex;align-items:center;justify-content:center;gap:14px;
+        }
+        .ayah-label::before,.ayah-label::after{content:'✦';font-size:6px;color:rgba(194,163,120,.4);}
+        .ayah-ar {
+            font-family:'Amiri',serif;
+            font-size:clamp(1.7rem,3.5vw,2.5rem);direction:rtl;
+            color:var(--gold-light);line-height:1.9;margin-bottom:18px;
+            position:relative;z-index:1;
+        }
+        .ayah-divider{display:none;}
+        .ayah-ru {
+            font-size:clamp(1rem,1.8vw,1.25rem);font-style:italic;font-weight:300;
+            color:rgba(232,213,176,.68);line-height:1.9;max-width:660px;
+            margin:0 auto 22px;position:relative;z-index:1;
+        }
+        .ayah-ref{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;position:relative;z-index:1;}
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 52px 38px;
+            border-radius: var(--radius-xl);
+            text-decoration: none; color: var(--text);
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center;
+            border: 1px solid rgba(194,163,120,.09);
+            box-shadow: var(--shadow-card);
+            position: relative; overflow: hidden;
+            transition: transform .55s cubic-bezier(.23,1,.32,1), box-shadow .55s ease, border-color .5s ease;
+        }
+        .card::after {
+            content:'';position:absolute;bottom:0;left:0;right:0;height:2px;border-radius:2px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+            transform:scaleX(0);transition:transform .5s ease;
+        }
+        .card:hover { transform:translateY(-14px); box-shadow:0 32px 72px rgba(61,49,41,.1); border-color:rgba(194,163,120,.22); }
+        .card:hover::after{transform:scaleX(1);}
+
+        .icon-box {
+            width: 80px; height: 80px;
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(194,163,120,.1);
+            transition: transform .55s cubic-bezier(.34,1.56,.64,1), background .5s ease;
+        }
+        .card svg { width: 38px; height: 38px; fill: var(--gold); transition: fill .5s, transform .5s cubic-bezier(.34,1.56,.64,1); }
+        .card:hover .icon-box { background: var(--gold); transform: rotate(10deg) scale(1.1); }
+        .card:hover svg { fill: var(--white); transform: scale(1.1); }
+
+        .card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.05rem; font-weight: 600; letter-spacing: .8px;
+            color: var(--bg-dark); margin-bottom: 14px;
+        }
+        .card p {
+            font-size: 1rem; line-height: 1.75; color: var(--muted);
+            font-weight: 300;
+        }
+
+        .reveal {
+            opacity: 0; transform: translateY(36px);
+            transition: opacity 1s cubic-bezier(.2,.8,.2,1), transform 1s cubic-bezier(.2,.8,.2,1);
+            transition-delay: var(--delay, 0s);
+        }
+        .reveal.visible { opacity:1; transform:translateY(0); }
+
+        footer {
+            background: var(--bg-dark);
+            padding: 72px 28px 44px; text-align: center;
+            border-top: 1px solid rgba(194,163,120,.08);
+        }
+        .footer-brand {
+            font-family: 'Cinzel', serif;
+            font-size: 1.15rem; letter-spacing: 5px; color: var(--gold);
+            text-transform: uppercase; display: block; margin-bottom: 36px;
+        }
+        .footer-contacts {
+            display: flex; flex-direction: column; gap: 14px;
+            align-items: center; margin-bottom: 40px;
+        }
+        .contact-link {
+            color: var(--gold-light); text-decoration: none;
+            font-family: 'Cinzel', serif; font-size: 10px;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 24px; border-radius: 50px;
+            border: 1px solid rgba(194,163,120,.18);
+            transition: all .4s ease;
+        }
+        .contact-link svg { width: 16px; height: 16px; fill: currentColor; }
+        .contact-link:hover { background: var(--gold); color: var(--bg-dark); border-color: var(--gold); }
+        .footer-divider { width: 60px; height: 1px; background: linear-gradient(90deg,transparent,rgba(194,163,120,.25),transparent); margin: 0 auto 32px; }
+        .copyright { font-family:'Cinzel',serif; font-size: 8.5px; letter-spacing: 2px; text-transform: uppercase; color: rgba(194,163,120,.18); }
+
+        @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+        @keyframes growLine { to { width:180px; } }
+
+        @media (max-width: 768px) {
+            .logo-name { display:none; }
+            nav { gap:16px; flex-wrap: wrap; justify-content: flex-end; }
+            .prayer-bar { flex-wrap:wrap; padding:16px 8px; border-radius:var(--radius-lg); margin-top:-36px; }
+            .prayer-cell { min-width:30%; border-radius:var(--radius-sm); }
+            .prayer-cell + .prayer-cell::before { display:none; }
+            .ayah-card { padding:48px 24px; }
+            .features-grid { grid-template-columns:1fr; }
+            .section-wrap { padding:60px 16px; }
+            .hero-ring-1,.hero-ring-2 { display:none; }
+            .top-bar { padding: 8px 16px; }
+            #location-text { display: none; }
+        }
+        @media (max-width: 480px) {
+            .prayer-cell { min-width:33.3%; }
+            .hero-cta { width:100%;justify-content:center;max-width:280px; }
+        }
+
+        ::-webkit-scrollbar{width:5px;}
+        ::-webkit-scrollbar-track{background:var(--cream);}
+        ::-webkit-scrollbar-thumb{background:rgba(194,163,120,.3);border-radius:3px;}
+        ::-webkit-scrollbar-thumb:hover{background:var(--gold);}
+    </style>
 </head>
 <body>
 
-<header>
-    <div class="header-container">
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<div id="loader">
+    <div class="ld-ar">بِسْمِ اللهِ</div>
+    <div class="ld-line"></div>
+    <div class="ld-sub">Ummah Online</div>
+</div>
+
+<div class="top-bar">
+    <div><span class="top-bar-dot"></span><span id="hijri-date">...</span></div>
+    <div class="top-bar-right">
+        <span id="location-text">Detecting...</span>
         <div class="lang-switcher">
-            <a href="https://ummahonline.org" class="lang-link active">EN</a>
-            <span style="color: rgba(255,255,255,0.3)">|</span>
-            <a href="https://ru.ummahonline.org" class="lang-link">RU</a>
+            <a href="https://ru.ummahonline.org" class="lang-btn inactive">RU</a>
+            <span class="lang-btn active">EN</span>
         </div>
     </div>
+</div>
+
+<header class="main-header">
+    <a href="index.html" class="logo-link">
+        <img src="logo.png" class="logo-img-sm" alt="Ummah Logo"
+             onerror="this.src='https://via.placeholder.com/40/c2a378/ffffff?text=U'">
+        <span class="logo-name">Ummah Online</span>
+    </a>
+    <nav>
+        <a href="quran.html" class="nav-link">Quran</a>
+        <a href="azan.html" class="nav-link">Prayer</a>
+        <a href="tasbih.html" class="nav-link">Tasbih</a>
+        <a href="https://en.ummahonline.org/ai.html" target="_blank" class="nav-link">AI Assistant</a>
+        <a href="https://markaz.ummahonline.org" target="_blank" class="nav-link">Academy</a>
+    </nav>
 </header>
 
 <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-pattern"></div>
+    <div class="hero-ring hero-ring-1"></div>
+    <div class="hero-ring hero-ring-2"></div>
+    <div class="particles" id="particles"></div>
+
     <div class="hero-content">
-        <div class="main-logo-box">
-            <img src="logo.png" alt="Logo">
+        <div class="hero-logo-box">
+            <img src="logo.png" alt="Ummah Logo"
+                 onerror="this.src='https://via.placeholder.com/80/c2a378/ffffff?text=U'">
         </div>
-        <h1>The Path to Knowledge and Faith</h1>
-        <div class="hero-btns">
-            <a href="quran.html" class="btn-main btn-gold">The Holy Quran</a>
-            <a href="prayer.html" class="btn-main btn-outline">Prayer Times</a>
-            <a href="news.html" class="btn-main btn-outline">News</a>
-        </div>
+        <div class="hero-eyebrow">Welcome</div>
+        <h1 class="hero-title">A Path to Knowledge<br>and Faith</h1>
+        <p class="hero-sub">Your trusted guide in the world of Islamic education and spiritual practice.</p>
+        <a href="quran.html" class="hero-cta">
+            <span>Begin the journey</span>
+            <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+        </a>
+    </div>
+
+    <div class="scroll-hint">
+        <span class="scroll-hint-txt">Scroll</span>
+        <div class="scroll-line"></div>
     </div>
 </section>
 
-<main class="container">
-    <div id="daily-ayah-container" class="daily-ayah-card">
-        <h3 style="color:var(--accent-gold); margin-top:0; text-transform: uppercase; font-size: 12px; letter-spacing: 2px;">Ayah of the Day</h3>
-        <div id="ayah-content">
-            <p class="ayah-ar">Loading...</p>
-            <p class="ayah-en">Please wait</p>
+<div class="prayer-wrap">
+    <div class="prayer-bar">
+        <div class="prayer-cell" id="fajr">
+            <span class="p-name">Fajr</span>
+            <span class="p-time">--:--</span>
+        </div>
+        <div class="prayer-cell" id="sunrise">
+            <span class="p-name">Sunrise</span>
+            <span class="p-time">--:--</span>
+        </div>
+        <div class="prayer-cell" id="dhuhr">
+            <span class="p-name">Dhuhr</span>
+            <span class="p-time">--:--</span>
+        </div>
+        <div class="prayer-cell" id="asr">
+            <span class="p-name">Asr</span>
+            <span class="p-time">--:--</span>
+        </div>
+        <div class="prayer-cell" id="maghrib">
+            <span class="p-name">Maghrib</span>
+            <span class="p-time">--:--</span>
+        </div>
+        <div class="prayer-cell" id="isha">
+            <span class="p-name">Isha</span>
+            <span class="p-time">--:--</span>
         </div>
     </div>
+</div>
 
-    <div class="section-header">
-        <h2>Our Services</h2>
+<div class="marquee" id="marquee-wrap">
+    <div class="marquee-track" id="marquee-track"></div>
+</div>
+
+<div class="section-wrap">
+    <div class="ayah-card reveal">
+        <div class="ayah-label">Verse of the Day</div>
+        <div id="ayah-ar" class="ayah-ar">فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ</div>
+        <p id="ayah-ru" class="ayah-ru">"Remember Me, and I will remember you. Give thanks to Me and do not be ungrateful."</p>
+        <div id="ayah-ref" class="ayah-ref">Al-Baqarah, 2:152</div>
     </div>
 
     <div class="features-grid">
-        <a href="quran.html" class="nav-card">
-            <svg viewBox="0 0 24 24"><path d="M19 2H5c-1.11 0-2 .9-2 2v16c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 14.5l-3.5-2 3.5-2 3.5 2-3.5 2zM19 8H5V6h14v2z"/></svg>
-            <h3>Quran</h3>
-            <p>Read and study Surahs with translation</p>
+        <a href="quran.html" class="card reveal" style="--delay:.1s">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M19 2H5c-1.11 0-2 .9-2 2v16c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 14.5l-3.5-2 3.5-2 3.5 2-3.5 2zM19 8H5V6h14v2z"/></svg>
+            </div>
+            <h3>Quran Online</h3>
+            <p>The complete Holy Quran with translation of meanings.</p>
         </a>
 
-        <a href="azan.html" class="nav-card">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-            <h3>Prayer</h3>
-            <p>Get accurate prayer times for your city</p>
+        <a href="azan.html" class="card reveal" style="--delay:.22s">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            </div>
+            <h3>Prayer Times</h3>
+            <p>Accurate prayer schedule based on your location.</p>
         </a>
 
-        <a href="news.html" class="nav-card">
-            <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 12H5V7h6v10zm9 0h-7v-2h7v2zm0-4h-7v-2h7v2zm0-4h-7V7h7v2z"/></svg>
-            <h3>News</h3>
-            <p>Latest updates from the Muslim Ummah</p>
+        <a href="tasbih.html" class="card reveal" style="--delay:.28s">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 .73-.2 1.42-.55 2.01A3.99 3.99 0 0 1 18 11.5a4 4 0 0 1-2.33 3.63A4 4 0 0 1 12 18a4 4 0 0 1-3.67-2.37A4 4 0 0 1 6 11.5c0-1.44.76-2.7 1.91-3.41A3.98 3.98 0 0 1 8 6a4 4 0 0 1 4-4zm0 2a2 2 0 0 0-2 2c0 .34.09.66.24.94l.48.89-.87.51A2 2 0 0 0 8 11.5c0 .93.64 1.72 1.5 1.93l1 .24-.42.93c-.05.11-.08.24-.08.4a2 2 0 0 0 4 0c0-.16-.03-.29-.08-.4l-.42-.93 1-.24A1.99 1.99 0 0 0 16 11.5a2 2 0 0 0-1.85-1.99l-.87-.05.48-.89c.15-.28.24-.6.24-.94a2 2 0 0 0-2-2z"/></svg>
+            </div>
+            <h3>Tasbih</h3>
+            <p>Dhikr counter with saved results for each remembrance.</p>
+        </a>
+
+        <a href="https://en.ummahonline.org/ai.html" target="_blank" class="card reveal" style="--delay:.34s">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v1.1a6.5 6.5 0 0 1 4.9 6.3V15a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-3.6A6.5 6.5 0 0 1 10 5.1V4a2 2 0 0 1 2-2zm-2 9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm4 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9 19h6v1a3 3 0 0 1-6 0v-1z"/></svg>
+            </div>
+            <h3>AI Assistant</h3>
+            <p>Ask questions about Islam and get quick answers online.</p>
+        </a>
+
+        <a href="https://markaz.ummahonline.org" target="_blank" class="card reveal" style="--delay:.4s">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5.89 12.55L12 15.89l6.11-3.34c.66.36 1.1 1.05 1.1 1.84 0 1.16-.94 2.11-2.11 2.11H4.89c-1.16 0-2.11-.94-2.11-2.11 0-.79.44-1.48 1.11-1.84z"/></svg>
+            </div>
+            <h3>Academy</h3>
+            <p>Courses on Quran and Arabic language.</p>
         </a>
     </div>
-</main>
+</div>
 
 <footer>
-    <p>&copy; 2026 Ummah Online. All rights reserved.</p>
+    <span class="footer-brand">Ummah Online</span>
+    <div class="footer-contacts">
+        <a href="mailto:rnsbussines1@gmail.com" class="contact-link">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            rnsbussines1@gmail.com
+        </a>
+        <a href="https://t.me/ummahonline" target="_blank" class="contact-link">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .33z"/></svg>
+            t.me/ummahonline
+        </a>
+    </div>
+    <div class="footer-divider"></div>
+    <p class="copyright">&copy; 2026 Ummah Online · All rights reserved</p>
 </footer>
 
 <script>
-function loadDailyAyah() {
-    const ayahs = [
-        { ar: "فَاذْكُرُونِي أَذْكُرْكُمْ", en: "\"Remember Me; I will remember you.\" (2:152)" },
-        { ar: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", en: "\"Indeed, Allah is with the patient.\" (2:153)" },
-        { ar: "وَقُل رَّبِّ زِدْنِي عِلْمًا", en: "\"And say, 'My Lord, increase me in knowledge.'\" (20:114)" }
-    ];
-    const random = ayahs[Math.floor(Math.random() * ayahs.length)];
-    document.getElementById('ayah-content').innerHTML = `
-        <p class="ayah-ar">${random.ar}</p>
-        <p class="ayah-en">${random.en}</p>
-    `;
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+if(cur && ring && window.matchMedia('(pointer:fine)').matches) {
+    document.addEventListener('mousemove', e => {
+        mx=e.clientX; my=e.clientY;
+        cur.style.left=(mx-4.5)+'px'; cur.style.top=(my-4.5)+'px';
+    });
+    (function loop(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+        ring.style.left=(rx-18)+'px'; ring.style.top=(ry-18)+'px';
+        requestAnimationFrame(loop); })();
+    document.querySelectorAll('a,button').forEach(el=>{
+        el.addEventListener('mouseenter',()=>{ cur.style.transform='scale(2.4)'; ring.style.transform='scale(1.5)'; ring.style.borderColor='rgba(194,163,120,.85)'; });
+        el.addEventListener('mouseleave',()=>{ cur.style.transform='scale(1)'; ring.style.transform='scale(1)'; ring.style.borderColor='rgba(194,163,120,.45)'; });
+    });
 }
-window.onload = loadDailyAyah;
-</script>
 
+window.addEventListener('load', ()=> setTimeout(()=> document.getElementById('loader').classList.add('hide'), 1800));
+
+const pc = document.getElementById('particles');
+for(let i=0;i<28;i++){
+    const p=document.createElement('div'); p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}vw;animation-duration:${Math.random()*13+8}s;animation-delay:${Math.random()*13}s;width:${Math.random()*2+1}px;height:${Math.random()*2+1}px;`;
+    pc.appendChild(p);
+}
+
+(function initMarquee(){
+    const track = document.getElementById('marquee-track');
+    if(!track) return;
+    const dotHTML = '<span class="m-dot"></span>';
+    const phrase = `سُبْحَانَ اللَّهِ ${dotHTML} الْحَمْدُ لِلَّهِ ${dotHTML} اللَّهُ أَكْبَرُ ${dotHTML} لَا إِلَهَ إِلَّا اللَّهُ ${dotHTML} بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ ${dotHTML}`;
+
+    const seed = document.createElement('div');
+    seed.className = 'marquee-item';
+    seed.innerHTML = phrase;
+    track.appendChild(seed);
+
+    requestAnimationFrame(()=>{
+        const itemW = seed.offsetWidth;
+        const needed = Math.ceil((window.innerWidth * 2) / itemW) + 2;
+        track.innerHTML = '';
+        const total = needed * 2;
+        for(let i=0;i<total;i++){
+            const el=document.createElement('div');
+            el.className='marquee-item';
+            el.innerHTML=phrase;
+            track.appendChild(el);
+        }
+        const duration = (itemW * needed) / 80;
+        track.style.animation = `marqueeScroll ${duration}s linear infinite`;
+    });
+})();
+
+const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+},{ threshold:.1, rootMargin:'0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+async function fetchPrayerAndCity(lat, lon) {
+    try {
+        const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`);
+        const data = await res.json();
+        if (data.code !== 200) return;
+
+        const t = data.data.timings;
+        const h = data.data.date.hijri;
+        const meta = data.data.meta;
+
+        document.querySelector('#fajr .p-time').textContent    = t.Fajr;
+        document.querySelector('#sunrise .p-time').textContent = t.Sunrise;
+        document.querySelector('#dhuhr .p-time').textContent   = t.Dhuhr;
+        document.querySelector('#asr .p-time').textContent     = t.Asr;
+        document.querySelector('#maghrib .p-time').textContent = t.Maghrib;
+        document.querySelector('#isha .p-time').textContent    = t.Isha;
+
+        document.getElementById('hijri-date').textContent = `${h.day} ${h.month.en} ${h.year} AH`;
+
+        if (meta && meta.timezone) {
+            const parts = meta.timezone.split('/');
+            const cityRaw = parts[parts.length - 1].replace(/_/g, ' ');
+            document.getElementById('location-text').textContent = cityRaw;
+        }
+
+        const parse = s => { const [hh,mm] = s.split(':').map(Number); return hh*60+mm; };
+        const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+        const ids  = ['fajr','dhuhr','asr','maghrib','isha'];
+        const mins = [parse(t.Fajr),parse(t.Dhuhr),parse(t.Asr),parse(t.Maghrib),parse(t.Isha)];
+        document.querySelectorAll('.prayer-cell').forEach(el => el.classList.remove('active'));
+        let idx = 0;
+        for (let i = mins.length-1; i >= 0; i--) { if (nowMin >= mins[i]) { idx = i; break; } }
+        document.getElementById(ids[idx])?.classList.add('active');
+
+    } catch(e) { console.error('aladhan error:', e); }
+}
+
+async function fetchAyah(){
+    try{
+        const n = Math.floor(Math.random()*6236)+1;
+        const [r1,r2] = await Promise.all([
+            fetch(`https://api.alquran.cloud/v1/ayah/${n}/en.sahih`),
+            fetch(`https://api.alquran.cloud/v1/ayah/${n}`)
+        ]);
+        const [d1,d2] = await Promise.all([r1.json(),r2.json()]);
+        if(d1.code===200){
+            document.getElementById('ayah-ar').textContent = d2.data.text;
+            document.getElementById('ayah-ru').textContent = `"${d1.data.text}"`;
+            document.getElementById('ayah-ref').textContent =
+                `${d1.data.surah.englishName}, ${d1.data.surah.number}:${d1.data.numberInSurah}`;
+        }
+    }catch(e){ console.error('Ayah error:', e); }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    fetchAyah();
+    fetchPrayerAndCity(51.5074, -0.1278);
+    document.getElementById('location-text').textContent = 'London';
+
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            fetchPrayerAndCity(pos.coords.latitude, pos.coords.longitude);
+        },
+        err => {
+            console.warn('Geo denied:', err.message);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+    );
+});
+</script>
 </body>
 </html>
-
