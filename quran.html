@@ -543,10 +543,14 @@
     const AUDIO_EDITION = 'ar.mahermuaiqly';
     const AUDIO_BITRATE = 128;
     const AUDIO_RECITER_NAME = 'Maher Al-Muaiqly';
-    const QURAN_DATA_FILE = 'quran_ru.json';
+    const QURAN_API_BASE = 'https://alquran.api.islamic.network/v1';
+    const ARABIC_TEXT_EDITION = 'quran-uthmani';
+    const TRANSLATION_EDITION = 'en.sahih';
+    const TRANSLATION_LABEL = 'Sahih International';
 
     let qData = [];
     let surahAyahOffsets = [];
+    let surahDetailsCache = new Map();
     let isReading = false;
     let currentAudio = null;
     let activeSurahIndex = null;
@@ -559,19 +563,19 @@
 
     async function loadAll() {
         try {
-            const qRes = await fetch(QURAN_DATA_FILE);
+            const qRes = await fetch(`${QURAN_API_BASE}/surah`);
 
             if (!qRes.ok) {
-                throw new Error(`File ${QURAN_DATA_FILE} not found next to the page.`);
+                throw new Error('Surah list could not be loaded from AlQuran Cloud.');
             }
 
-            qData = await qRes.json();
-            qData = qData.suras || qData;
+            const payload = await qRes.json();
+            qData = payload.data || payload.suras || payload || [];
             buildSurahAyahOffsets();
             setLoadNotice('');
         } catch (e) {
             console.error('Load error:', e);
-            setLoadNotice(`Could not load ${QURAN_DATA_FILE}. Place it next to quran.html.`);
+            setLoadNotice('Could not load the Quran list from AlQuran Cloud. Check your internet connection and try again.');
         }
 
         renderList();
@@ -587,9 +591,21 @@
         let total = 0;
         surahAyahOffsets = qData.map((surah) => {
             const currentOffset = total;
-            total += (surah.aya || surah.verses || []).length;
+            total += surah.numberOfAyahs || (surah.aya || surah.verses || []).length;
             return currentOffset;
         });
+    }
+
+    function getSurahDisplayParts(index, surah = qData[index]) {
+        const fallbackName = surah?.englishName || `Surah ${index + 1}`;
+        const fallbackDesc = surah?.englishNameTranslation || '';
+
+        if (!namesEn[index]) {
+            return { title: fallbackName, subtitle: fallbackDesc, icon: '' };
+        }
+
+        const [title = fallbackName, subtitle = fallbackDesc, icon = ''] = namesEn[index].split(' — ');
+        return { title, subtitle, icon };
     }
 
     function renderList() {
@@ -597,18 +613,18 @@
         container.innerHTML = '';
 
         qData.forEach((surah, i) => {
-            const parts = namesEn[i].split(' — ');
+            const parts = getSurahDisplayParts(i, surah);
             const card = document.createElement('div');
             card.className = 'surah-card';
             card.style.animationDelay = `${i * 0.01}s`;
             card.onclick = () => openSurah(i);
 
-            const ayahCount = (surah.aya || surah.verses || []).length;
+            const ayahCount = surah.numberOfAyahs || (surah.aya || surah.verses || []).length;
             card.innerHTML = `
                 <div class="surah-num">${i + 1}</div>
                 <span class="ar-name">${surah.name}</span>
-                <div class="ru-name">${parts[0]} ${parts[2] || ''}</div>
-                <div class="ru-desc">${parts[1]}</div>
+                <div class="ru-name">${parts.title} ${parts.icon || ''}</div>
+                <div class="ru-desc">${parts.subtitle}</div>
                 <div class="ayah-count">${ayahCount} verses</div>
             `;
             container.appendChild(card);
@@ -631,11 +647,13 @@
     }
 
     function buildPlaybackQueue(surahIdx, startAyahIdx = 0, mode = 'ayah') {
-        const ayahs = qData[surahIdx]?.aya || qData[surahIdx]?.verses || [];
-        const slice = mode === 'surah' ? ayahs.slice(startAyahIdx) : ayahs.slice(startAyahIdx, startAyahIdx + 1);
+        const cachedAyahs = surahDetailsCache.get(surahIdx)?.ayahs || [];
+        const ayahCount = cachedAyahs.length || qData[surahIdx]?.numberOfAyahs || 0;
+        const ayahIndexes = mode === 'surah'
+            ? Array.from({ length: Math.max(ayahCount - startAyahIdx, 0) }, (_, offset) => startAyahIdx + offset)
+            : [startAyahIdx];
 
-        return slice.map((_, offset) => {
-            const ayahIndex = startAyahIdx + offset;
+        return ayahIndexes.filter((ayahIndex) => ayahIndex < ayahCount).map((ayahIndex) => {
             return {
                 surahIndex: surahIdx,
                 ayahIndex,
@@ -879,7 +897,40 @@
     const playIcon = () => `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
     const pauseIcon = () => `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
 
-    function openSurah(index) {
+    async function fetchSurahDetails(index) {
+        if (surahDetailsCache.has(index)) {
+            return surahDetailsCache.get(index);
+        }
+
+        const surahNumber = index + 1;
+        const response = await fetch(`${QURAN_API_BASE}/surah/${surahNumber}/editions/${ARABIC_TEXT_EDITION},${TRANSLATION_EDITION}`);
+        if (!response.ok) {
+            throw new Error(`Surah ${surahNumber} could not be loaded.`);
+        }
+
+        const payload = await response.json();
+        const editions = Array.isArray(payload.data) ? payload.data : [];
+        const arabicEdition = editions.find((edition) => edition?.edition?.identifier === ARABIC_TEXT_EDITION) || editions[0];
+        const translationEdition = editions.find((edition) => edition?.edition?.identifier === TRANSLATION_EDITION);
+
+        if (!arabicEdition?.ayahs?.length) {
+            throw new Error(`Arabic text for surah ${surahNumber} is missing.`);
+        }
+
+        const normalizedSurah = {
+            ...qData[index],
+            ayahs: arabicEdition.ayahs.map((ayah, ayahIndex) => ({
+                text: ayah.text,
+                translation: translationEdition?.ayahs?.[ayahIndex]?.text || '',
+                numberInSurah: ayah.numberInSurah || ayahIndex + 1
+            }))
+        };
+
+        surahDetailsCache.set(index, normalizedSurah);
+        return normalizedSurah;
+    }
+
+    async function openSurah(index) {
         stopPlayback();
         isReading = true;
         activeSurahIndex = index;
@@ -887,84 +938,99 @@
         document.getElementById('list-view').style.display = 'none';
         document.getElementById('reading-view').style.display = 'block';
 
-        const surah = qData[index];
-        const parts = namesEn[index].split(' — ');
-        document.getElementById('current-ar').innerText = surah.name;
-        document.getElementById('current-ru').innerText = parts[0];
-
-        const ayahs = surah.aya || surah.verses;
-        document.getElementById('current-info').innerText = `${parts[1]} · ${ayahs.length} verses · ${AUDIO_RECITER_NAME}`;
-
         const container = document.getElementById('ayahs-container');
-        container.innerHTML = '';
+        const parts = getSurahDisplayParts(index);
+        const meta = qData[index];
 
-        if (index !== 0 && index !== 8) {
-            container.innerHTML += `<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
-        }
+        document.getElementById('current-ar').innerText = meta?.name || '';
+        document.getElementById('current-ru').innerText = parts.title;
+        document.getElementById('current-info').innerText = `Loading ${TRANSLATION_LABEL}...`;
+        container.innerHTML = `<div class="load-notice visible">Loading Arabic text and ${TRANSLATION_LABEL} translation...</div>`;
 
-        ayahs.forEach((ayah, i) => {
-            const ayahNum = i + 1;
-            const div = document.createElement('div');
-            div.className = 'ayah-box';
-            div.dataset.surahIndex = index;
-            div.dataset.ayahIndex = i;
-            div.innerHTML = `
-                <div class="ayah-header">
-                    <span class="ayah-num">Verse ${ayahNum}</span>
-                    <div class="ayah-audio-actions">
-                        <button class="play-btn" data-surah-index="${index}" data-ayah-index="${i}" onclick="toggleAudio(this, ${index}, ${i})">${playIcon()}</button>
+        try {
+            const surah = await fetchSurahDetails(index);
+            if (!isReading || activeSurahIndex !== index) return;
+
+            const loadedParts = getSurahDisplayParts(index, surah);
+            const ayahs = surah.ayahs || [];
+
+            document.getElementById('current-ar').innerText = surah.name;
+            document.getElementById('current-ru').innerText = loadedParts.title;
+            document.getElementById('current-info').innerText = `${loadedParts.subtitle} · ${ayahs.length} verses · ${AUDIO_RECITER_NAME} · ${TRANSLATION_LABEL}`;
+            container.innerHTML = '';
+
+            if (index !== 0 && index !== 8) {
+                container.innerHTML += `<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
+            }
+
+            ayahs.forEach((ayah, i) => {
+                const ayahNum = ayah.numberInSurah || i + 1;
+                const div = document.createElement('div');
+                div.className = 'ayah-box';
+                div.dataset.surahIndex = index;
+                div.dataset.ayahIndex = i;
+                div.innerHTML = `
+                    <div class="ayah-header">
+                        <span class="ayah-num">Verse ${ayahNum}</span>
+                        <div class="ayah-audio-actions">
+                            <button class="play-btn" data-surah-index="${index}" data-ayah-index="${i}" onclick="toggleAudio(this, ${index}, ${i})">${playIcon()}</button>
+                        </div>
                     </div>
-                </div>
-                <span class="ayah-text-ar">${ayah.text}</span>
-                <p class="ayah-text-ru">${ayah.translation || ayah.text_russian || ''}</p>
-            `;
-            container.appendChild(div);
-        });
+                    <span class="ayah-text-ar">${ayah.text}</span>
+                    <p class="ayah-text-ru">${ayah.translation || ''}</p>
+                `;
+                container.appendChild(div);
+            });
 
-        const nav = document.createElement('div');
-        nav.className = 'surah-nav';
+            const nav = document.createElement('div');
+            nav.className = 'surah-nav';
 
-        if (index < qData.length - 1) {
-            const next = qData[index + 1];
-            const nextParts = namesEn[index + 1].split(' — ');
-            const nextCount = (next.aya || next.verses || []).length;
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'surah-nav-btn next';
-            nextBtn.onclick = () => openSurah(index + 1);
-            nextBtn.innerHTML = `
-                <span class="nav-arrow">←</span>
-                <div class="nav-texts">
-                    <span class="nav-label">Next surah</span>
-                    <span class="nav-ar">${next.name}</span>
-                    <span class="nav-name">${nextParts[0]}</span>
-                    <span class="nav-count">${nextCount} verses</span>
-                </div>
-            `;
-            nav.appendChild(nextBtn);
+            if (index < qData.length - 1) {
+                const next = qData[index + 1];
+                const nextParts = getSurahDisplayParts(index + 1, next);
+                const nextCount = next.numberOfAyahs || 0;
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'surah-nav-btn next';
+                nextBtn.onclick = () => openSurah(index + 1);
+                nextBtn.innerHTML = `
+                    <span class="nav-arrow">←</span>
+                    <div class="nav-texts">
+                        <span class="nav-label">Next surah</span>
+                        <span class="nav-ar">${next.name}</span>
+                        <span class="nav-name">${nextParts.title}</span>
+                        <span class="nav-count">${nextCount} verses</span>
+                    </div>
+                `;
+                nav.appendChild(nextBtn);
+            }
+
+            if (index > 0) {
+                const prev = qData[index - 1];
+                const prevParts = getSurahDisplayParts(index - 1, prev);
+                const prevCount = prev.numberOfAyahs || 0;
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'surah-nav-btn prev';
+                prevBtn.onclick = () => openSurah(index - 1);
+                prevBtn.innerHTML = `
+                    <span class="nav-arrow">→</span>
+                    <div class="nav-texts">
+                        <span class="nav-label">Previous surah</span>
+                        <span class="nav-ar">${prev.name}</span>
+                        <span class="nav-name">${prevParts.title}</span>
+                        <span class="nav-count">${prevCount} verses</span>
+                    </div>
+                `;
+                nav.appendChild(prevBtn);
+            }
+
+            container.appendChild(nav);
+            updateAudioUi();
+            window.scrollTo(0, 0);
+        } catch (error) {
+            console.error('Surah load error:', error);
+            document.getElementById('current-info').innerText = `${parts.subtitle} · ${TRANSLATION_LABEL}`;
+            container.innerHTML = `<div class="load-notice visible">Could not load this surah from AlQuran Cloud. Check your internet connection and try again.</div>`;
         }
-
-        if (index > 0) {
-            const prev = qData[index - 1];
-            const prevParts = namesEn[index - 1].split(' — ');
-            const prevCount = (prev.aya || prev.verses || []).length;
-            const prevBtn = document.createElement('button');
-            prevBtn.className = 'surah-nav-btn prev';
-            prevBtn.onclick = () => openSurah(index - 1);
-            prevBtn.innerHTML = `
-                <span class="nav-arrow">→</span>
-                <div class="nav-texts">
-                    <span class="nav-label">Previous surah</span>
-                    <span class="nav-ar">${prev.name}</span>
-                    <span class="nav-name">${prevParts[0]}</span>
-                    <span class="nav-count">${prevCount} verses</span>
-                </div>
-            `;
-            nav.appendChild(prevBtn);
-        }
-
-        container.appendChild(nav);
-        updateAudioUi();
-        window.scrollTo(0, 0);
     }
 
     function handleBack() {
